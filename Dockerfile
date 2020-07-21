@@ -30,9 +30,6 @@ RUN mbed config --global toolchain gcc_arm
 RUN wget https://raw.githubusercontent.com/ARMmbed/mbed-os/master/requirements.txt
 RUN python3 -m pip install -r ./requirements.txt
 
-# # installing missing python libs and toolchain
-# RUN cd /tmp && mbed new tmp0 && cd tmp0 && mbed compile >/dev/null 2>&1; cd .. && rm -r /tmp/tmp0
-
 #workdir
 WORKDIR /home/projects
 
