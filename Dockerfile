@@ -1,4 +1,7 @@
-FROM python:3.8.4-buster
+FROM python:3.10.0b3-buster
+
+# Set up a tools dev directory
+WORKDIR /home/dev
 
 #update
 RUN apt-get update 
@@ -7,24 +10,36 @@ RUN apt-get update
 RUN apt-get install -y build-essential\
                     python3-dev\
                     git\
+                    ninja-build\
                     mercurial
 
-#install mbed cli
-RUN python3 -m pip install mbed-cli
 
-# Set up a tools dev directory
-WORKDIR /home/dev
-
-#download GCC_ARM compiler 6-2017-q2-update) 6.3.1 20170620 (release) 
-RUN wget https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/9-2020q2/gcc-arm-none-eabi-9-2020-q2-update-x86_64-linux.tar.bz2\
-    && tar xvf gcc-arm-none-eabi-9-2020-q2-update-x86_64-linux.tar.bz2 \
-    && rm gcc-arm-none-eabi-9-2020-q2-update-x86_64-linux.tar.bz2
+#download GCC_ARM 10-2020-q4-major x86_64 linux
+RUN wget https://developer.arm.com/-/media/Files/downloads/gnu-rm/10-2020q4/gcc-arm-none-eabi-10-2020-q4-major-x86_64-linux.tar.bz2\
+    && tar xvf gcc-arm-none-eabi-10-2020-q4-major-x86_64-linux.tar.bz2 \
+    && rm gcc-arm-none-eabi-10-2020-q4-major-x86_64-linux.tar.bz2
 
 # Set up the compiler path
-ENV PATH $PATH:/home/dev/gcc-arm-none-eabi-9-2020-q2-update/bin
+ENV PATH $PATH:/home/dev/gcc-arm-none-eabi-10-2020-q4-major/bin
 
-# set GCC_ARM  as global toolchain
-RUN mbed config --global toolchain gcc_arm
+# #install cmake from source
+# RUN wget https://github.com/Kitware/CMake/releases/download/v3.20.5/cmake-3.20.5.tar.gz\
+#     && tar -zxvf cmake-3.20.5.tar.gz\
+#     && cd cmake-3.20.5\
+#     && ./bootstrap\
+#     && make\
+#     && make install
+
+# install cmake from binary, faster
+RUN wget https://github.com/Kitware/CMake/releases/download/v3.20.5/cmake-3.20.5-linux-x86_64.sh\
+    && chmod 755 cmake-3.20.5-linux-x86_64.sh\
+    && ./cmake-3.20.5-linux-x86_64.sh --include-subdir --skip-license\
+    && rm cmake-3.20.5-linux-x86_64.sh
+
+ENV PATH $PATH:/home/dev/cmake-3.20.5-linux-x86_64/bin
+
+#install mbed tools
+RUN python3 -m pip install mbed-tools
 
 # install mbed os requirements
 RUN wget https://raw.githubusercontent.com/ARMmbed/mbed-os/master/requirements.txt

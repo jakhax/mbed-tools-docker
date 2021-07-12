@@ -1,10 +1,15 @@
-# Docker Mbed Cli
+# Mbed Tools Docker
 
-This is an un-official  [mbed-cli](https://os.mbed.com/docs/mbed-os/v5.12/tools/developing-mbed-cli.html) docker image. Currently it only supports `GCC Arm` as its default compiler.
+This is an un-official [mbed-tools](https://os.mbed.com/docs/mbed-os/v6.12/build-tools/mbed-cli-2.html) docker image. 
+
+Currently it only supports `GCC Arm` as its default compiler.
+
+For old mbed-cli docker image see [https://github.com/jakhax/docker-mbed-cli](https://github.com/jakhax/docker-mbed-cli)
+
 
 ## Building
 ```bash
-docker build -t "mbed_cli" --build-arg USER_ID=$(id -u)  --build-arg GROUP_ID=$(id -g) .
+docker build -t "mbed_tools" --build-arg USER_ID=$(id -u)  --build-arg GROUP_ID=$(id -g) .
 ```
 
 if you dont plan on using it with your default user(shared user permissions) you can edit this part out in the Dockerfile
@@ -18,44 +23,39 @@ USER user
 ```
 then build using
 ```bash
-docker build -t "mbed_cli" .
+docker build -t "mbed_tools" .
 ```
 
-You can  add an alias like `mbed_docker` to use it like `mbed-cli`
+You can  add an alias like `mbed_tools` to use it like `mbed-tools`
 ```bash
-alias mbed_docker='docker run -it -v $(pwd):/home/projects:cached mbed_cli mbed-cli'
+alias mbed_docker='docker run -it -v $(pwd):/home/projects:cached mbed_tools mbed-tools'
 ```
 
 ## Usage
 
 **Using above alias**
 ```bash
-╰─$ mbed_docker
-usage: mbed [-h] [--version]             ...
+╰─$ mbed_tools
+Usage: mbed-tools [OPTIONS] COMMAND [ARGS]...
 
-Command-line code management tool for ARM mbed OS - http://www.mbed.com
-version 1.10.4
+  Command line tool for interacting with Mbed OS.
 
-Use "mbed <command> -h|--help" for detailed help.
-Online manual and guide available at https://github.com/ARMmbed/mbed-cli
 ...
 ```
 
 **Without alias**
 ```bash
-╰─$ docker run -it -v $(pwd):/home/projects:cached mbed_cli mbed-cli
-usage: mbed [-h] [--version]             ...
+╰─$ docker run -it -v $(pwd):/home/projects:cached mbed_tools Usage: mbed-tools [OPTIONS] COMMAND [ARGS]...
 
-Command-line code management tool for ARM mbed OS - http://www.mbed.com
-version 1.10.4
+  Command line tool for interacting with Mbed OS.
 ...
 ```
 
-For more usage see [https://os.mbed.com/docs/mbed-os/v6.2/build-tools/mbed-cli.html](https://os.mbed.com/docs/mbed-os/v6.2/build-tools/mbed-cli.html)
-
+## Todo
+- [ ] Reduce image size using alpine base image or multistage image.
 
 ## Resources
 
-- https://os.mbed.com/docs/mbed-os/v6.2/build-tools/install-and-set-up.html
+- https://os.mbed.com/docs/mbed-os/v6.12/build-tools/install-or-upgrade.html
 - https://vsupalov.com/docker-shared-permissions/
 - https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm/downloads
